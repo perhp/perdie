@@ -1,6 +1,4 @@
 /**
- * Refactored example using DFRobot ENS160 and DFRobot BME280.
- *
  * Make sure you have installed the required libraries:
  *   - DFRobot_ENS160
  *   - DFRobot_BME280
@@ -10,6 +8,39 @@
  *   - GND to GND
  *   - SCL to A5 (Arduino UNO) or SCL pin on other boards
  *   - SDA to A4 (Arduino UNO) or SDA pin on other boards
+ *
+ * -----------------------------------------------------------
+ * AQI Reference
+ * -----------------------------------------------------------
+ * Level | Description                          | Suggestion                                             | Recommended Stay Time
+ * ----- | ------------------------------------ | ------------------------------------------------------ | ----------------------
+ * 5     | Extremely bad                        | Strengthen ventilation, or leave                       | Not recommended to stay
+ * 4     | Bad                                  | Strengthen ventilation, find sources of pollution      | Less than one month
+ * 3     | Generally                            | Strengthen ventilation, close to the water source      | Less than 12 months
+ * 2     | Good                                 | Maintain adequate ventilation                          | Suitable for long-term living
+ * 1     | Excellent                            | No suggestion                                          | Suitable for long-term living
+ *
+ * -----------------------------------------------------------
+ * eCO2/CO2 Concentration Reference
+ * -----------------------------------------------------------
+ * eCO2/CO2       | Level        | Suggestion
+ * -------------- | ------------ | -------------------------------------------------------------
+ * >= 1500        | Terrible     | Indoor air pollution is serious and requires ventilation
+ * 1000 - 1500    | Bad          | Indoor air is polluted, ventilation is recommended
+ * 800 - 1000     | Generally    | Can be ventilated
+ * 600 - 800      | Good         | Keep it normal
+ * 400 - 600      | Excellent    | No suggestion
+ *
+ * -----------------------------------------------------------
+ * TVOC Concentration Reference
+ * -----------------------------------------------------------
+ * TOVC (ppb)     | Effects on Human Health
+ * -------------  | ------------------------------------------------
+ * > 6000         | Headaches and nerve problems
+ * 750 - 6000     | Restlessness and headache
+ * 50 - 750       | Restlessness and discomfort
+ * < 50           | No effect
+ * -----------------------------------------------------------
  */
 
 #include <Arduino.h>
