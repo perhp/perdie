@@ -82,11 +82,10 @@ void printBMEStatus(DFRobot_BME280_IIC::eStatus_t eStatus)
 
 void setup()
 {
-  // Start the serial communication
   Serial.begin(115200);
   delay(100);
 
-  // Initialize the BME280 sensor
+  // Initialize BME280 sensor
   bme.reset();
   Serial.println(F("Initializing BME280 sensor..."));
   while (bme.begin() != DFRobot_BME280_IIC::eStatusOK)
@@ -113,14 +112,18 @@ void setup()
 
 void loop()
 {
-  // Read BME280 environmental data
+  // Read BME280
   float temperatureC = bme.getTemperature();
   uint32_t pressurePa = bme.getPressure();
   float humidityPct = bme.getHumidity();
   float altitudeM = bme.calAltitude(SEA_LEVEL_PRESSURE, pressurePa);
 
-  // Provide fresh T/H data to ENS160 for accurate gas reading compensation
+  // Read ENS160
   ens160.setTempAndHum(temperatureC, humidityPct);
+  uint8_t ensStatus = ens160.getENS160Status();
+  uint8_t aqi = ens160.getAQI();
+  uint16_t tvoc = ens160.getTVOC();
+  uint16_t eco2 = ens160.getECO2();
 
   // Print BME280 readings
   Serial.println();
@@ -133,12 +136,6 @@ void loop()
   Serial.println(altitudeM);
   Serial.print(F("Humidity (%):    "));
   Serial.println(humidityPct);
-
-  // Read ENS160 gas sensor data
-  uint8_t ensStatus = ens160.getENS160Status();
-  uint8_t aqi = ens160.getAQI();
-  uint16_t tvoc = ens160.getTVOC();
-  uint16_t eco2 = ens160.getECO2();
 
   // Print ENS160 readings
   Serial.println(F("======== ENS160 Readings ========"));
