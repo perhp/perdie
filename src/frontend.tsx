@@ -12,7 +12,7 @@ function start() {
         <Route path="/" element={<Dashboard />} />
         <Route path="/about" element={<About />} />
       </Routes>
-    </BrowserRouter>
+    </BrowserRouter>,
   );
 }
 
