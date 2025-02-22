@@ -3,29 +3,17 @@ import index from "./index.html";
 
 const server = serve({
   routes: {
+    // Serve the index.html file for all routes
     "/*": index,
 
-    "/api/hello": {
-      async GET(req) {
-        return Response.json({
-          message: "Hello, world!",
-          method: "GET",
-        });
-      },
-      async PUT(req) {
-        return Response.json({
-          message: "Hello, world!",
-          method: "PUT",
-        });
-      },
-    },
-
-    "/api/hello/:name": async (req) => {
-      const name = req.params.name;
-      return Response.json({
-        message: `Hello, ${name}!`,
-      });
-    },
+    // API endpoints
+    "/api/sensors": {
+      async POST(req) {
+        const body = await req.json();
+        console.log("Sensor data received", body);
+        return new Response("OK");
+      }
+    }
   },
 
   development: process.env.NODE_ENV !== "production",
