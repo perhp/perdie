@@ -59,39 +59,13 @@ Servo servo;
 
 int servoPosition = 0;
 
-/**
- * @brief Prints the status code returned by BME sensor operations.
- * @param eStatus The status code from the BME280 library.
- */
-void printBMEStatus(DFRobot_BME280_IIC::eStatus_t eStatus)
-{
-  switch (eStatus)
-  {
-  case DFRobot_BME280_IIC::eStatusOK:
-    Serial.println(F("Everything OK"));
-    break;
-  case DFRobot_BME280_IIC::eStatusErr:
-    Serial.println(F("Unknown error"));
-    break;
-  case DFRobot_BME280_IIC::eStatusErrDeviceNotDetected:
-    Serial.println(F("Device not detected"));
-    break;
-  case DFRobot_BME280_IIC::eStatusErrParameter:
-    Serial.println(F("Parameter error"));
-    break;
-  default:
-    Serial.println(F("Unknown status"));
-    break;
-  }
-}
-
 void setup()
 {
   Serial.begin(115200);
   delay(100);
 
   // Initialize servo
-  servo.attach(13, 350, 2475);
+  servo.attach(13, 300, 2460);
 
   // Initialize BME280 sensor
   bme.reset();
@@ -158,17 +132,60 @@ void loop()
   Serial.println(F("=================================="));
   Serial.println();
 
-  for (servoPosition = 0; servoPosition <= 180; servoPosition += 1) {
-    servo.write(servoPosition);
-    delay(20);
-  }
-   
+  moveServo(180);
   delay(5000);
+  moveServo(0);
 
-  for (servoPosition = 180; servoPosition >= 0; servoPosition -= 1) {
-    servo.write(servoPosition);
-    delay(20);
+  delay(5000);
+}
+
+/**
+ * @brief Prints the status code returned by BME sensor operations.
+ * @param eStatus The status code from the BME280 library.
+ */
+void printBMEStatus(DFRobot_BME280_IIC::eStatus_t eStatus)
+{
+  switch (eStatus)
+  {
+  case DFRobot_BME280_IIC::eStatusOK:
+    Serial.println(F("Everything OK"));
+    break;
+  case DFRobot_BME280_IIC::eStatusErr:
+    Serial.println(F("Unknown error"));
+    break;
+  case DFRobot_BME280_IIC::eStatusErrDeviceNotDetected:
+    Serial.println(F("Device not detected"));
+    break;
+  case DFRobot_BME280_IIC::eStatusErrParameter:
+    Serial.println(F("Parameter error"));
+    break;
+  default:
+    Serial.println(F("Unknown status"));
+    break;
   }
+}
 
-  delay(10000);
+/**
+ * @brief Move servo from its current position to the specified position.
+ * @param pos The position to move the servo to.
+ */
+void moveServo(int targetPosition)
+{
+  const int delayTime = 20;
+  if (servoPosition < targetPosition)
+  {
+    for (servoPosition; servoPosition <= targetPosition; servoPosition++)
+    {
+      servo.write(servoPosition);
+      delay(delayTime);
+    }
+  }
+  else
+  {
+    for (servoPosition; servoPosition >= targetPosition; servoPosition--)
+    {
+      servo.write(servoPosition);
+      delay(delayTime);
+    }
+  }
 }
