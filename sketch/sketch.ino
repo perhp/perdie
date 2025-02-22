@@ -45,6 +45,7 @@
 
 #include <Arduino.h>
 #include <Wire.h>
+#include <ESP32Servo.h>
 #include <DFRobot_ENS160.h>
 #include <DFRobot_BME280.h>
 
@@ -53,6 +54,10 @@ constexpr float SEA_LEVEL_PRESSURE = 1015.0f;
 
 DFRobot_ENS160_I2C ens160(&Wire, 0x53);
 DFRobot_BME280_IIC bme(&Wire, 0x76);
+
+Servo servo;
+
+int servoPosition = 0;
 
 /**
  * @brief Prints the status code returned by BME sensor operations.
@@ -84,6 +89,9 @@ void setup()
 {
   Serial.begin(115200);
   delay(100);
+
+  // Initialize servo
+  servo.attach(13, 350, 2475);
 
   // Initialize BME280 sensor
   bme.reset();
@@ -149,6 +157,18 @@ void loop()
   Serial.println(eco2);
   Serial.println(F("=================================="));
   Serial.println();
+
+  for (servoPosition = 0; servoPosition <= 180; servoPosition += 1) {
+    servo.write(servoPosition);
+    delay(20);
+  }
+   
+  delay(5000);
+
+  for (servoPosition = 180; servoPosition >= 0; servoPosition -= 1) {
+    servo.write(servoPosition);
+    delay(20);
+  }
 
   delay(10000);
 }
