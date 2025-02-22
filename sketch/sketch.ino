@@ -43,6 +43,11 @@
  * -----------------------------------------------------------
  */
 
+#include <secrets.h>
+
+#include <WiFi.h>
+#include <HTTPClient.h>
+
 #include <Arduino.h>
 #include <Wire.h>
 #include <ESP32Servo.h>
@@ -63,6 +68,9 @@ void setup()
 {
   Serial.begin(115200);
   delay(100);
+
+  // Connect WiFi
+  connectWiFi();
 
   // Initialize servo
   servo.attach(13, 300, 2460);
@@ -137,6 +145,23 @@ void loop()
   moveServo(0);
 
   delay(5000);
+}
+
+/**
+ * @brief Connect to WiFi using the SSID and password defined in secrets.h.
+ */
+void connectWiFi()
+{
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  Serial.println("Connecting to WiFi.");
+  while (WiFi.status() != WL_CONNECTED)
+  {
+    Serial.print('.');
+    delay(1000);
+  }
+  Serial.println("Connected! My IP address is: ");
+  Serial.print(WiFi.localIP());
 }
 
 /**
