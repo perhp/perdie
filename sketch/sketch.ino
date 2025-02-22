@@ -147,9 +147,16 @@ void loop()
   Serial.println(F("================================="));
   Serial.println();
 
-  moveServo(180);
-  delay(5000);
-  moveServo(0);
+  if (servoUpright && aqi >= 3)
+  {
+    moveServo(180);
+    servoUpright = false;
+  }
+  else if (!servoUpright && aqi == 1)
+  {
+    moveServo(0);
+    servoUpright = true;
+  }
 
   uploadSensorData(ensStatus, temperatureC, pressurePa, altitudeM, humidityPct, aqi, tvoc, eco2);
   delay(5000);
