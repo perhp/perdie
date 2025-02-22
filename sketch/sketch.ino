@@ -47,9 +47,9 @@
 
 #include <WiFi.h>
 #include <HTTPClient.h>
-
 #include <Arduino.h>
 #include <Wire.h>
+#include <Arduino_JSON.h>
 #include <ESP32Servo.h>
 #include <DFRobot_ENS160.h>
 #include <DFRobot_BME280.h>
@@ -61,8 +61,8 @@ DFRobot_ENS160_I2C ens160(&Wire, 0x53);
 DFRobot_BME280_IIC bme(&Wire, 0x76);
 
 Servo servo;
-
 int servoPosition = 0;
+bool servoUpright = true;
 
 void setup()
 {
@@ -102,6 +102,13 @@ void setup()
 
 void loop()
 {
+  if (WiFi.status() != WL_CONNECTED)
+  {
+    Serial.println(F("WiFi connection lost. Attempting to reconnect in 5 seconds..."));
+    delay(5000);
+    connectWiFi();
+  }
+
   // Read BME280
   float temperatureC = bme.getTemperature();
   uint32_t pressurePa = bme.getPressure();
@@ -137,13 +144,14 @@ void loop()
   Serial.println(tvoc);
   Serial.print(F("eCO2 (ppm): "));
   Serial.println(eco2);
-  Serial.println(F("=================================="));
+  Serial.println(F("================================="));
   Serial.println();
 
   moveServo(180);
   delay(5000);
   moveServo(0);
 
+  uploadSensorData(ensStatus, temperatureC, pressurePa, altitudeM, humidityPct, aqi, tvoc, eco2);
   delay(5000);
 }
 
@@ -154,13 +162,13 @@ void connectWiFi()
 {
   WiFi.mode(WIFI_STA);
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-  Serial.println("Connecting to WiFi.");
+  Serial.println(F("Connecting to WiFi."));
   while (WiFi.status() != WL_CONNECTED)
   {
-    Serial.print('.');
+    Serial.print(F("."));
     delay(1000);
   }
-  Serial.println("Connected! My IP address is: ");
+  Serial.println(F("Connected! IP address: "));
   Serial.print(WiFi.localIP());
 }
 
@@ -213,4 +221,52 @@ void moveServo(int targetPosition)
       delay(delayTime);
     }
   }
+}
+
+/**
+ * @brief Upload sensor data to the API.
+ * @param temperature The temperature in Celsius.
+ * @param pressure The pressure in Pascals.
+ * @param altitude The altitude in meters.
+ * @param humidity The humidity in percentage.
+ * @param aqi The Air Quality Index.
+ * @param tvoc The Total Volatile Organic Compounds in ppb.
+ * @param eco2 The eCO2 in ppm.
+ */
+void uploadSensorData(uint8_t ensStatus, float temperature, uint32_t pressure, float altitude, float humidity, uint8_t aqi, uint16_t tvoc, uint16_t eco2)
+{
+  HTTPClient http;
+
+  // Create JSON payload
+  JSONVar payload;
+  payload["ensStatus"] = ensStatus;
+  payload["temperature"] = temperature;
+  payload["pressure"] = pressure;
+  payload["altitude"] = altitude;
+  payload["humidity"] = humidity;
+  payload["aqi"] = aqi;
+  payload["tvoc"] = tvoc;
+  payload["eco2"] = eco2;
+
+  Serial.println(F("======== Uploading Sensor Data ==="));
+  // Send POST request
+  http.begin(String(API_URL) + "/api/sensors");
+  http.addHeader("Content-Type", "application/json");
+  int httpResponseCode = http.POST(JSON.stringify(payload));
+  if (httpResponseCode > 0)
+  {
+    String response = http.getString();
+    Serial.println(F("Upload succesful!"));
+    Serial.print(F("Response: "));
+    Serial.print(httpResponseCode);
+    Serial.println(String(F(" ")) + response);
+  }
+  else
+  {
+    Serial.print(F("Error on sending POST request: "));
+    Serial.println(httpResponseCode);
+  }
+  Serial.println(F("=================================="));
+
+  http.end();
 }
