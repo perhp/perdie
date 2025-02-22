@@ -175,8 +175,8 @@ void connectWiFi()
     Serial.print(F("."));
     delay(1000);
   }
-  Serial.println(F("Connected! IP address: "));
-  Serial.print(WiFi.localIP());
+  Serial.print(F("Connected! IP address: "));
+  Serial.println(WiFi.localIP());
 }
 
 /**
@@ -212,26 +212,29 @@ void printBMEStatus(DFRobot_BME280_IIC::eStatus_t eStatus)
 void moveServo(int targetPosition)
 {
   const int delayTime = 20;
-  if (servoPosition < targetPosition)
+  int startPos = servoPosition;
+  if (startPos < targetPosition)
   {
-    for (servoPosition; servoPosition <= targetPosition; servoPosition++)
+    for (int pos = startPos; pos <= targetPosition; pos++)
     {
-      servo.write(servoPosition);
+      servo.write(pos);
       delay(delayTime);
     }
   }
   else
   {
-    for (servoPosition; servoPosition >= targetPosition; servoPosition--)
+    for (int pos = startPos; pos >= targetPosition; pos--)
     {
-      servo.write(servoPosition);
+      servo.write(pos);
       delay(delayTime);
     }
   }
+  servoPosition = targetPosition;
 }
 
 /**
  * @brief Upload sensor data to the API.
+ * @param ensStatus The status of the ENS160 sensor.
  * @param temperature The temperature in Celsius.
  * @param pressure The pressure in Pascals.
  * @param altitude The altitude in meters.
@@ -263,7 +266,7 @@ void uploadSensorData(uint8_t ensStatus, float temperature, uint32_t pressure, f
   if (httpResponseCode > 0)
   {
     String response = http.getString();
-    Serial.println(F("Upload succesful!"));
+    Serial.println(F("Upload successful!"));
     Serial.print(F("Response: "));
     Serial.print(httpResponseCode);
     Serial.println(String(F(" ")) + response);
