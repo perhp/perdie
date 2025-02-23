@@ -12,7 +12,7 @@ const server = serve({
     "/api/climate-readings": {
       async GET() {
         const readings = db
-          .prepare("SELECT * FROM climate_readings")
+          .prepare("SELECT * FROM climate_readings ORDER BY createdAt DESC")
           .all() as ClimateReading[];
         return new Response(JSON.stringify(readings), {
           headers: { "content-type": "application/json" },
