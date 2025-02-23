@@ -88,10 +88,10 @@ export default function Dashboard() {
                 <Line
                   dataKey="temperature"
                   type="natural"
-                  stroke="var(--color-desktop)"
+                  stroke="var(--color-red-800)"
                   strokeWidth={2}
                   dot={{
-                    fill: "var(--color-desktop)",
+                    fill: "var(--color-red-800)",
                   }}
                   activeDot={{
                     r: 6,
@@ -100,7 +100,7 @@ export default function Dashboard() {
                   <LabelList
                     position="top"
                     offset={12}
-                    className="fill-white"
+                    className="fill-black"
                     fontSize={12}
                     formatter={(value: number) => `${value}°C`}
                   />
@@ -112,7 +112,9 @@ export default function Dashboard() {
             {readings.length >= 2 && (
               <div className="flex gap-2 font-medium leading-none">
                 Temperature difference since last reading{" "}
-                {readings.at(-1)?.temperature! - readings.at(-2)?.temperature!}
+                {(
+                  readings.at(-1)!.temperature - readings.at(-2)!.temperature
+                ).toFixed(1)}
                 °C
               </div>
             )}
