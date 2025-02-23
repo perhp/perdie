@@ -261,6 +261,10 @@ void uploadSensorData(uint8_t ensStatus, float temperature, uint32_t pressure, f
   http.end();
 }
 
+/**
+ * @brief Determine the servo position based on the Air Quality Index (AQI).
+ * @param aqi The Air Quality Index.
+ */
 void determineServoPositionFromAQI(uint8_t aqi)
 {
   if (aqi >= 3)
