@@ -1,14 +1,4 @@
 /**
- * Make sure you have installed the required libraries:
- *   - DFRobot_ENS160
- *   - DFRobot_BME280
- *
- * Connections (typical I2C):
- *   - VCC to 3.3V/5V (depending on sensor board specs)
- *   - GND to GND
- *   - SCL to A5 (Arduino UNO) or SCL pin on other boards
- *   - SDA to A4 (Arduino UNO) or SDA pin on other boards
- *
  * -----------------------------------------------------------
  * AQI Reference
  * -----------------------------------------------------------
@@ -62,7 +52,6 @@ DFRobot_BME280_IIC bme(&Wire, 0x76);
 
 Servo servo;
 int servoPosition = 0;
-bool servoUpright = true;
 
 void setup()
 {
@@ -74,6 +63,7 @@ void setup()
 
   // Initialize servo
   servo.attach(13, 300, 2460);
+  moveServo(0);
 
   // Initialize BME280 sensor
   bme.reset();
@@ -147,17 +137,7 @@ void loop()
   Serial.println(F("================================="));
   Serial.println();
 
-  if (servoUpright && aqi >= 3)
-  {
-    moveServo(180);
-    servoUpright = false;
-  }
-  else if (!servoUpright && aqi == 1)
-  {
-    moveServo(0);
-    servoUpright = true;
-  }
-
+  determineServoPositionFromAQI(aqi);
   uploadSensorData(ensStatus, temperatureC, pressurePa, altitudeM, humidityPct, aqi, tvoc, eco2);
   delay(5000);
 }
@@ -258,7 +238,7 @@ void uploadSensorData(uint8_t ensStatus, float temperature, uint32_t pressure, f
   payload["tvoc"] = tvoc;
   payload["eco2"] = eco2;
 
-  Serial.println(F("======== Uploading Sensor Data ==="));
+  Serial.println(F("======== Uploading Sensor Data =="));
   // Send POST request
   http.begin(String(API_URL) + "/api/sensors");
   http.addHeader("Content-Type", "application/json");
@@ -276,7 +256,19 @@ void uploadSensorData(uint8_t ensStatus, float temperature, uint32_t pressure, f
     Serial.print(F("Error on sending POST request: "));
     Serial.println(httpResponseCode);
   }
-  Serial.println(F("=================================="));
+  Serial.println(F("================================="));
 
   http.end();
+}
+
+void determineServoPositionFromAQI(uint8_t aqi)
+{
+  if (aqi >= 3)
+  {
+    moveServo(180);
+  }
+  else if (aqi == 1)
+  {
+    moveServo(0);
+  }
 }
