@@ -126,13 +126,13 @@ void loop()
 
   // Print ENS160 readings
   Serial.println(F("======== ENS160 Readings ========"));
-  Serial.print(F("Sensor Status (0=Normal): "));
+  Serial.print(F("Sensor Status:     "));
   Serial.println(ensStatus);
-  Serial.print(F("Air Quality Index (1=Excellent, 5=Unhealthy): "));
+  Serial.print(F("Air Quality Index: "));
   Serial.println(aqi);
-  Serial.print(F("TVOC (ppb): "));
+  Serial.print(F("TVOC (ppb):        "));
   Serial.println(tvoc);
-  Serial.print(F("eCO2 (ppm): "));
+  Serial.print(F("eCO2 (ppm):        "));
   Serial.println(eco2);
   Serial.println(F("================================="));
   Serial.println();
@@ -225,6 +225,7 @@ void moveServo(int targetPosition)
  */
 void uploadSensorData(uint8_t ensStatus, float temperature, uint32_t pressure, float altitude, float humidity, uint8_t aqi, uint16_t tvoc, uint16_t eco2)
 {
+  Serial.println(F("======== Uploading Sensor Data =="));
   HTTPClient http;
 
   // Create JSON payload
@@ -238,7 +239,6 @@ void uploadSensorData(uint8_t ensStatus, float temperature, uint32_t pressure, f
   payload["tvoc"] = tvoc;
   payload["eco2"] = eco2;
 
-  Serial.println(F("======== Uploading Sensor Data =="));
   // Send POST request
   http.begin(String(API_URL) + "/api/sensors");
   http.addHeader("Content-Type", "application/json");
@@ -254,11 +254,12 @@ void uploadSensorData(uint8_t ensStatus, float temperature, uint32_t pressure, f
   else
   {
     Serial.print(F("Error on sending POST request: "));
+    Serial.println(F("Upload error."));
+    Serial.print(F("Response: "));
     Serial.println(httpResponseCode);
   }
-  Serial.println(F("================================="));
-
   http.end();
+  Serial.println(F("================================="));
 }
 
 /**
