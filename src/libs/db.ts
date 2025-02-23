@@ -11,6 +11,7 @@ db.exec(`
         humidity REAL,
         aqi REAL,
         tvoc REAL,
-        eco2 REAL
+        eco2 REAL,
+        createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
 `);
