@@ -241,7 +241,7 @@ void uploadSensorData(uint8_t ensStatus, float temperature, uint32_t pressure, f
   http.begin(String(API_URL) + "/api/climate-readings");
   http.addHeader("Content-Type", "application/json");
   int httpResponseCode = http.POST(JSON.stringify(payload));
-  if (httpResponseCode > 0)
+  if (httpResponseCode == 200)
   {
     String response = http.getString();
     Serial.println(F("Upload successful!"));
