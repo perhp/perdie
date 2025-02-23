@@ -114,28 +114,26 @@ void loop()
 
   // Print BME280 readings
   Serial.println();
-  Serial.println(F("======== BME280 Readings ========"));
-  Serial.print(F("Temperature (C): "));
+  Serial.println(F("====== BME280 Readings ========"));
+  Serial.print(F("Temperature (C):   "));
   Serial.println(temperatureC);
-  Serial.print(F("Pressure (Pa):   "));
-  Serial.println(pressurePa);
-  Serial.print(F("Altitude (m):    "));
-  Serial.println(altitudeM);
-  Serial.print(F("Humidity (%):    "));
+  Serial.print(F("Humidity (%):      "));
   Serial.println(humidityPct);
+  Serial.print(F("Pressure (Pa):     "));
+  Serial.println(pressurePa);
+  Serial.print(F("Altitude (m):      "));
+  Serial.println(altitudeM);
 
   // Print ENS160 readings
-  Serial.println(F("======== ENS160 Readings ========"));
-  Serial.print(F("Sensor Status:     "));
-  Serial.println(ensStatus);
+  Serial.println(F("====== ENS160 Readings ========"));
   Serial.print(F("Air Quality Index: "));
   Serial.println(aqi);
-  Serial.print(F("TVOC (ppb):        "));
-  Serial.println(tvoc);
   Serial.print(F("eCO2 (ppm):        "));
   Serial.println(eco2);
-  Serial.println(F("================================="));
-  Serial.println();
+  Serial.print(F("TVOC (ppb):        "));
+  Serial.println(tvoc);
+  Serial.print(F("Sensor Status:     "));
+  Serial.println(ensStatus);
 
   determineServoPositionFromAQI(aqi);
   uploadSensorData(ensStatus, temperatureC, pressurePa, altitudeM, humidityPct, aqi, tvoc, eco2);
@@ -225,7 +223,7 @@ void moveServo(int targetPosition)
  */
 void uploadSensorData(uint8_t ensStatus, float temperature, uint32_t pressure, float altitude, float humidity, uint8_t aqi, uint16_t tvoc, uint16_t eco2)
 {
-  Serial.println(F("======== Uploading Sensor Data =="));
+  Serial.println(F("====== Uploading Data ========="));
   HTTPClient http;
 
   // Create JSON payload
@@ -259,7 +257,7 @@ void uploadSensorData(uint8_t ensStatus, float temperature, uint32_t pressure, f
     Serial.println(httpResponseCode);
   }
   http.end();
-  Serial.println(F("================================="));
+  Serial.println(F("==============================="));
 }
 
 /**
