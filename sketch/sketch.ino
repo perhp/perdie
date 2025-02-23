@@ -44,8 +44,7 @@
 #include <DFRobot_ENS160.h>
 #include <DFRobot_BME280.h>
 
-// Use a constexpr for sea level pressure in hPa (hectopascals).
-constexpr float SEA_LEVEL_PRESSURE = 1015.0f;
+constexpr float SEA_LEVEL_PRESSURE = 1024.5f;
 
 DFRobot_ENS160_I2C ens160(&Wire, 0x53);
 DFRobot_BME280_IIC bme(&Wire, 0x76);
@@ -60,7 +59,7 @@ void setup()
   Serial.begin(115200);
   delay(100);
 
-  // Connect WiFi
+  // Connect to WiFi
   connectWiFi();
 
   // Initialize servo
@@ -83,7 +82,7 @@ void setup()
   Serial.println(F("Initializing ENS160 sensor..."));
   while (ens160.begin() != NO_ERR)
   {
-    Serial.println(F("ENS160 init failed, please check wiring"));
+    Serial.println(F("ENS160 init failed"));
     delay(3000);
   }
   Serial.println(F("ENS160 init success"));
