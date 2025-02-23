@@ -9,12 +9,17 @@ const server = serve({
     "/*": index,
 
     // API endpoints
-    "/api/sensors": {
+    "/api/climate-readings": {
+      async GET() {
+        const readings = db.prepare("SELECT * FROM climate_readings").all();
+        return new Response(JSON.stringify(readings), {
+          headers: { "content-type": "application/json" },
+        });
+      },
       async POST(req) {
         const body: Climate = await req.json();
-        console.log("Received data: ", body);
         db.prepare(
-          "INSERT INTO climate (ensStatus, temperature, pressure, altitude, humidity, aqi, tvoc, eco2) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+          "INSERT INTO climate_readings (ensStatus, temperature, pressure, altitude, humidity, aqi, tvoc, eco2) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
         ).run(
           body.ensStatus,
           body.temperature,
@@ -25,7 +30,8 @@ const server = serve({
           body.tvoc,
           body.eco2,
         );
-        return new Response("OK");
+        console.log("Inserted new climate reading:", body);
+        return Response.json(body);
       },
     },
   },

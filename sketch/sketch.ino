@@ -238,7 +238,7 @@ void uploadSensorData(uint8_t ensStatus, float temperature, uint32_t pressure, f
   payload["eco2"] = eco2;
 
   // Send POST request
-  http.begin(String(API_URL) + "/api/sensors");
+  http.begin(String(API_URL) + "/api/climate-readings");
   http.addHeader("Content-Type", "application/json");
   int httpResponseCode = http.POST(JSON.stringify(payload));
   if (httpResponseCode > 0)
