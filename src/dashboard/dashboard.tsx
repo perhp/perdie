@@ -46,7 +46,7 @@ export default function Dashboard() {
 
   const chartData = [...readings].reverse()?.map((reading) => ({
     createdAt: new Date(reading.createdAt).toLocaleString("default"),
-    temperature: reading.temperature,
+    temperature: +reading.temperature.toFixed(1),
   }));
 
   return (
@@ -99,8 +99,9 @@ export default function Dashboard() {
                   <LabelList
                     position="top"
                     offset={12}
-                    className="fill-foreground"
+                    className="fill-white"
                     fontSize={12}
+                    formatter={(value: number) => `${value}°C`}
                   />
                 </Line>
               </LineChart>
