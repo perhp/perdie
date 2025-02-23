@@ -1,6 +1,6 @@
 import { serve } from "bun";
-import { db } from "../lib/db";
 import index from "./index.html";
+import { db } from "./lib/db";
 import { ClimateReading } from "./models/sensor.model";
 
 const server = serve({

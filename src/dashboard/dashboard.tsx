@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/chart";
 import { ClimateReading } from "@/models/sensor.model";
 import { useQuery } from "@tanstack/react-query";
-import { TrendingUp } from "lucide-react";
 import { CartesianGrid, LabelList, Line, LineChart, XAxis } from "recharts";
 
 const chartConfig = {
@@ -41,17 +40,20 @@ function useClimateReadings() {
 export default function Dashboard() {
   const { data: readings } = useClimateReadings();
 
+  if (!readings) {
+    return <div>Loading..</div>;
+  }
+
   const chartData = readings?.map((reading) => ({
     createdAt: new Date(reading.createdAt).toLocaleString("default"),
     temperature: reading.temperature,
   }));
 
   return (
-    <div className="max-w-7xl mx-auto p-8 text-center relative z-10">
+    <div className="max-w-7xl mx-auto p-8 relative z-10">
       <h1 className="text-amber-950 text-5xl font-bold my-4 leading-tight">
         Dashboard
       </h1>
-
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <Card>
           <CardHeader>
@@ -103,11 +105,15 @@ export default function Dashboard() {
             </ChartContainer>
           </CardContent>
           <CardFooter className="flex-col items-start gap-2 text-sm">
-            <div className="flex gap-2 font-medium leading-none">
-              Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-            </div>
+            {readings.length >= 2 && (
+              <div className="flex gap-2 font-medium leading-none">
+                Temperature difference since last reading{" "}
+                {readings.at(-1)?.temperature! - readings.at(-2)?.temperature!}
+                °C
+              </div>
+            )}
             <div className="leading-none text-muted-foreground">
-              Showing temperature readings for the last hour
+              Recommended temperature: 18-22°C
             </div>
           </CardFooter>
         </Card>
