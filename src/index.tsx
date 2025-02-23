@@ -12,6 +12,7 @@ const server = serve({
     "/api/sensors": {
       async POST(req) {
         const body: Climate = await req.json();
+        console.log("Received data: ", body);
         db.prepare(
           "INSERT INTO climate (ensStatus, temperature, pressure, altitude, humidity, aqi, tvoc, eco2) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
         ).run(
