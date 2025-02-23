@@ -2,7 +2,7 @@ import { Database } from "bun:sqlite";
 
 export const db = new Database(":memory:");
 db.exec(`
-    CREATE TABLE IF NOT EXISTS sensors (
+    CREATE TABLE IF NOT EXISTS climate (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         ensStatus INTEGER,
         temperature REAL,
