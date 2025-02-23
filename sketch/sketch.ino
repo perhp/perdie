@@ -246,8 +246,7 @@ void uploadSensorData(uint8_t ensStatus, float temperature, uint32_t pressure, f
     String response = http.getString();
     Serial.println(F("Upload successful!"));
     Serial.print(F("Response: "));
-    Serial.print(httpResponseCode);
-    Serial.println(String(F(" ")) + response);
+    Serial.println(httpResponseCode);
   }
   else
   {
