@@ -27,10 +27,10 @@ export default function Dashboard() {
           >
             <div>
               <h2 className="text-amber-950 text-2xl font-bold">
-                {reading.temperature}°C
+                {reading.temperature.toFixed(1)}°C
               </h2>
               <p className="text-gray-500">
-                {reading.humidity}% humidity, {reading.pressure} hPa
+                {reading.humidity.toFixed(2)}% humidity, {reading.pressure} hPa
               </p>
             </div>
             <div className="mt-4">
