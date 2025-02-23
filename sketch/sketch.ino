@@ -53,6 +53,8 @@ DFRobot_BME280_IIC bme(&Wire, 0x76);
 Servo servo;
 int servoPosition = 0;
 
+const int READ_INTERVAL = 1000 * 60; // 1 minute
+
 void setup()
 {
   Serial.begin(115200);
@@ -137,7 +139,7 @@ void loop()
 
   determineServoPositionFromAQI(aqi);
   uploadSensorData(ensStatus, temperatureC, pressurePa, altitudeM, humidityPct, aqi, tvoc, eco2);
-  delay(5000);
+  delay(READ_INTERVAL);
 }
 
 /**
