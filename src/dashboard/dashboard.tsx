@@ -44,7 +44,7 @@ export default function Dashboard() {
     return <div>Loading..</div>;
   }
 
-  const chartData = readings?.map((reading) => ({
+  const chartData = [...readings].reverse()?.map((reading) => ({
     createdAt: new Date(reading.createdAt).toLocaleString("default"),
     temperature: reading.temperature,
   }));
@@ -58,7 +58,9 @@ export default function Dashboard() {
         <Card>
           <CardHeader>
             <CardTitle>Temperature</CardTitle>
-            <CardDescription>Last hour</CardDescription>
+            <CardDescription>
+              It's currently {readings.at(-1)?.temperature.toFixed(1)}°C
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <ChartContainer config={chartConfig}>
