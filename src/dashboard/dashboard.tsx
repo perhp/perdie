@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/chart";
 import { ClimateReading } from "@/models/sensor.model";
 import { useQuery } from "@tanstack/react-query";
+import { format } from "date-fns";
 import { CartesianGrid, LabelList, Line, LineChart, XAxis } from "recharts";
 
 const chartConfig = {
@@ -45,7 +46,7 @@ export default function Dashboard() {
   }
 
   const chartData = [...readings].reverse()?.map((reading) => ({
-    createdAt: new Date(reading.createdAt).toLocaleString("default"),
+    createdAt: format(new Date(reading.createdAt), "HH:mm"),
     temperature: +reading.temperature.toFixed(1),
   }));
 
