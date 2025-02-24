@@ -57,7 +57,7 @@ const int READ_INTERVAL = 1000 * 60; // 1 minute
 void setup()
 {
   Serial.begin(115200);
-  delay(100);
+  delay(500);
 
   // Connect to WiFi
   connectWiFi();
@@ -67,7 +67,6 @@ void setup()
   moveServo(0);
 
   // Initialize BME280 sensor
-  bme.reset();
   Serial.println(F("Initializing BME280 sensor..."));
   while (bme.begin() != DFRobot_BME280_IIC::eStatusOK)
   {
@@ -270,7 +269,7 @@ void determineServoPositionFromAQI(uint8_t aqi)
   {
     moveServo(180);
   }
-  else if (aqi == 1)
+  else if (aqi <= 2)
   {
     moveServo(0);
   }

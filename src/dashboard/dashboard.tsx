@@ -15,7 +15,7 @@ import {
 import { ClimateReading } from "@/models/sensor.model";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
-import { CartesianGrid, LabelList, Line, LineChart, XAxis } from "recharts";
+import { CartesianGrid, Line, LineChart, XAxis } from "recharts";
 
 const chartConfig = {
   desktop: {
@@ -45,22 +45,25 @@ export default function Dashboard() {
     return <div>Loading..</div>;
   }
 
-  const chartData = [...readings].reverse()?.map((reading) => ({
+  const chartData = readings.map((reading) => ({
     createdAt: format(new Date(reading.createdAt), "HH:mm"),
     temperature: +reading.temperature.toFixed(1),
   }));
 
+  const latestReading = readings.at(-1);
+  const previousReading = readings.at(-2);
+
   return (
-    <div className="max-w-7xl mx-auto p-8 relative z-10">
-      <h1 className="text-amber-950 text-5xl font-bold my-4 leading-tight">
+    <div className="relative z-10 p-8 mx-auto max-w-7xl">
+      <h1 className="my-4 text-5xl font-bold leading-tight text-amber-950">
         Dashboard
       </h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         <Card>
           <CardHeader>
             <CardTitle>Temperature</CardTitle>
             <CardDescription>
-              It's currently {readings.at(-1)?.temperature.toFixed(1)}°C
+              It's currently {latestReading?.temperature.toFixed(1)}°C
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -83,28 +86,19 @@ export default function Dashboard() {
                 />
                 <ChartTooltip
                   cursor={false}
-                  content={<ChartTooltipContent indicator="line" />}
+                  content={
+                    <ChartTooltipContent
+                      indicator="line"
+                      className="bg-white"
+                    />
+                  }
                 />
                 <Line
                   dataKey="temperature"
                   type="natural"
                   stroke="var(--color-red-800)"
                   strokeWidth={2}
-                  dot={{
-                    fill: "var(--color-red-800)",
-                  }}
-                  activeDot={{
-                    r: 6,
-                  }}
-                >
-                  <LabelList
-                    position="top"
-                    offset={12}
-                    className="fill-black"
-                    fontSize={12}
-                    formatter={(value: number) => `${value}°C`}
-                  />
-                </Line>
+                />
               </LineChart>
             </ChartContainer>
           </CardContent>
@@ -112,8 +106,13 @@ export default function Dashboard() {
             {readings.length >= 2 && (
               <div className="flex gap-2 font-medium leading-none">
                 Temperature difference since last reading{" "}
+                {latestReading!.temperature === previousReading?.temperature
+                  ? ""
+                  : latestReading!.temperature > previousReading!.temperature
+                    ? "+"
+                    : "-"}{" "}
                 {(
-                  readings.at(-1)!.temperature - readings.at(-2)!.temperature
+                  latestReading!.temperature - previousReading!.temperature
                 ).toFixed(1)}
                 °C
               </div>

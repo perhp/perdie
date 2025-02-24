@@ -12,7 +12,7 @@ const server = serve({
     "/api/climate-readings": {
       async GET() {
         const readings = db
-          .prepare("SELECT * FROM climate_readings ORDER BY createdAt DESC")
+          .prepare("SELECT * FROM climate_readings ORDER BY createdAt ASC")
           .all() as ClimateReading[];
         return new Response(JSON.stringify(readings), {
           headers: { "content-type": "application/json" },
@@ -39,6 +39,8 @@ const server = serve({
   },
 
   development: process.env.NODE_ENV !== "production",
+
+  port: process.env.NODE_ENV === "production" ? 80 : undefined,
 });
 
 console.log(`🚀 Server running at ${server.url}`);
