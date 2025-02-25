@@ -107,7 +107,7 @@ void loop()
   }
 
   // Read BME280
-  float temperatureC = bme280.getTemperature() - 5;
+  float temperatureC = bme280.getTemperature() - 4.5;
   uint32_t pressurePa = bme280.getPressure();
   float humidityPct = bme280.getHumidity();
   float altitudeM = bme280.calAltitude(SEA_LEVEL_PRESSURE, pressurePa);
@@ -142,7 +142,7 @@ void loop()
   Serial.print(F("Sensor Status:     "));
   Serial.println(ensStatus);
 
-  determineServoPositionFromAQI(aqi);
+  determineServoPosition(eco2);
   uploadSensorData(ensStatus, temperatureC, pressurePa, altitudeM, humidityPct, aqi, tvoc, eco2);
   delay(READ_INTERVAL);
 }
@@ -270,13 +270,13 @@ void uploadSensorData(uint8_t ensStatus, float temperature, uint32_t pressure, f
  * @brief Determine the servo position based on the Air Quality Index (AQI).
  * @param aqi The Air Quality Index.
  */
-void determineServoPositionFromAQI(uint8_t aqi)
+void determineServoPosition(uint16_t eco2)
 {
-  if (aqi >= 4)
+  if (eco2 >= 1000)
   {
     moveServo(180);
   }
-  else if (aqi <= 2)
+  else if (eco2 <= 800)
   {
     moveServo(0);
   }
