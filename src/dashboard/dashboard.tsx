@@ -12,6 +12,7 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { ClimateReading } from "@/models/sensor.model";
+import { Usage } from "@/models/usage.model";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { Line, LineChart, YAxis } from "recharts";
@@ -39,14 +40,36 @@ function useClimateReadings() {
   });
 }
 
-export default function Dashboard() {
-  const { data: readings, isLoading, isError } = useClimateReadings();
+function useUsage() {
+  return useQuery({
+    queryKey: ["usage"],
+    queryFn: async (): Promise<Usage> => {
+      const response = await fetch("/api/usage");
+      return await response.json();
+    },
+    refetchInterval: 10000,
+    refetchIntervalInBackground: true,
+  });
+}
 
-  if (isLoading) {
+export default function Dashboard() {
+  const {
+    data: readings,
+    isLoading: climateReadingsIsLoading,
+    isError: climateReadingsIsError,
+  } = useClimateReadings();
+
+  const {
+    data: usage,
+    isLoading: usageIsLoading,
+    isError: usageIsError,
+  } = useUsage();
+
+  if (climateReadingsIsLoading || usageIsLoading) {
     return <div>Loading..</div>;
   }
 
-  if (isError || !readings) {
+  if (climateReadingsIsError || usageIsError || !readings || !usage) {
     return <div>Error</div>;
   }
 
@@ -62,6 +85,16 @@ export default function Dashboard() {
 
   return (
     <div className="grid min-h-screen grid-cols-1 gap-px bg-gray-200 md:grid-cols-2 lg:grid-cols-3">
+      <div className="flex items-center px-8 text-sm font-medium bg-white col-span-full">
+        CPU: {usage.cpu.temperature}°C | {usage.cpu.usage}%{" "}
+        <span className="px-4 font-medium">-</span>
+        Memory: {((usage.memory.used / usage.memory.total) * 100).toFixed(2)}%
+        used of {(usage.memory.total / 1024).toFixed(0)} MB
+        <span className="px-4 font-medium">-</span>
+        Uptime: {(usage.uptime / 1000 / 60).toFixed(0)} minutes
+        <span className="px-4 font-medium">-</span>
+        Voltage: {usage.voltage}V
+      </div>
       <Chart
         title="AQI"
         color="var(--color-purple-800)"
