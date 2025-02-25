@@ -75,6 +75,11 @@ const server = serve({
           body.tvoc,
           body.eco2,
         );
+
+        db.prepare("DELETE FROM climate_readings WHERE createdAt < ?").run(
+          new Date(Date.now() - 1000 * 60 * 60).toISOString(),
+        );
+
         console.log("Inserted new climate reading:", body);
         return Response.json(body);
       },
