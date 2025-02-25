@@ -181,7 +181,7 @@ function Chart({
         <CardTitle className="font-semibold text-gray-300">{title}</CardTitle>
         <CardDescription className="font-extrabold text-7xl">
           {latestReading?.[property]}
-          {functionalUnit ?? ""}
+          <span className="font-bold text-4xl">{functionalUnit ?? ""}</span>
         </CardDescription>
       </CardHeader>
       <CardContent>
