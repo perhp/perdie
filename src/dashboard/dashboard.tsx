@@ -15,7 +15,7 @@ import { ClimateReading } from "@/models/sensor.model";
 import { Usage } from "@/models/usage.model";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
-import { Activity, Cpu, MemoryStick, Zap } from "lucide-react";
+import { Activity, Cpu, Github, MemoryStick, Zap } from "lucide-react";
 import { Line, LineChart, YAxis } from "recharts";
 
 const chartConfig = {
@@ -78,15 +78,15 @@ export default function Dashboard() {
     createdAt: format(new Date(reading.createdAt), "HH:mm"),
     temperature: +reading.temperature.toFixed(1),
     humidity: +reading.humidity.toFixed(1),
-    pressure: +reading.pressure.toFixed(0),
+    pressure: +(reading.pressure / 100).toFixed(0),
     aqi: reading.aqi,
     tvoc: reading.tvoc,
     eco2: reading.eco2,
   }));
 
   return (
-    <div className="grid min-h-screen grid-cols-1 gap-1 bg-gray-300 md:grid-cols-2 lg:grid-cols-3">
-      <div className="flex items-center px-8 text-sm font-medium bg-white col-span-full">
+    <>
+      <div className="flex items-center px-8 text-sm font-medium bg-slate-900 text-gray-100 col-span-full h-10">
         <Cpu className="size-4 mr-1" /> {usage.cpu.usage.toFixed(1)}% at{" "}
         {usage.cpu.temperature}°C
         <div className="px-4 font-medium" />
@@ -98,49 +98,54 @@ export default function Dashboard() {
         {(usage.uptime / 1000 / 60).toFixed(0)} minutes
         <div className="px-4 font-medium" />
         <Zap className="size-4 mr-1" /> {usage.voltage}V
+        <a href="https://github.com/perhp" target="_blank" className="ml-auto">
+          <Github className="size-4" />
+        </a>
       </div>
-      <Chart
-        title="AQI"
-        color="var(--color-purple-800)"
-        chartData={chartData}
-        property="aqi"
-      />
-      <Chart
-        title="Temperature"
-        color="var(--color-red-800)"
-        chartData={chartData}
-        property="temperature"
-        functionalUnit="°C"
-      />
-      <Chart
-        title="Humidity"
-        color="var(--color-blue-800)"
-        chartData={chartData}
-        property="humidity"
-        functionalUnit="%"
-      />
-      <Chart
-        title="Pressure"
-        color="var(--color-yellow-800)"
-        chartData={chartData}
-        property="pressure"
-        functionalUnit="Pa"
-      />
-      <Chart
-        title="TVOC"
-        color="var(--color-gray-800)"
-        chartData={chartData}
-        property="tvoc"
-        functionalUnit="ppb"
-      />
-      <Chart
-        title="eCO2"
-        color="var(--color-blue-800)"
-        chartData={chartData}
-        property="eco2"
-        functionalUnit="ppm"
-      />
-    </div>
+      <div className="grid min-h-screen grid-cols-1 gap-0.5 bg-slate-900 md:grid-cols-2 lg:grid-cols-3">
+        <Chart
+          title="AQI"
+          color="var(--color-purple-800)"
+          chartData={chartData}
+          property="aqi"
+        />
+        <Chart
+          title="Temperature"
+          color="var(--color-red-800)"
+          chartData={chartData}
+          property="temperature"
+          functionalUnit="°C"
+        />
+        <Chart
+          title="Humidity"
+          color="var(--color-blue-800)"
+          chartData={chartData}
+          property="humidity"
+          functionalUnit="%"
+        />
+        <Chart
+          title="Pressure"
+          color="var(--color-yellow-800)"
+          chartData={chartData}
+          property="pressure"
+          functionalUnit="hPa"
+        />
+        <Chart
+          title="TVOC"
+          color="var(--color-gray-800)"
+          chartData={chartData}
+          property="tvoc"
+          functionalUnit="ppb"
+        />
+        <Chart
+          title="eCO2"
+          color="var(--color-blue-800)"
+          chartData={chartData}
+          property="eco2"
+          functionalUnit="ppm"
+        />
+      </div>
+    </>
   );
 }
 
@@ -171,9 +176,9 @@ function Chart({
   };
 
   return (
-    <Card className="h-full px-2 py-8 bg-white border-none rounded-none shadow-none">
+    <Card className="h-full px-2 py-8 bg-slate-800 border-none rounded-none shadow-none text-white">
       <CardHeader className="gap-0">
-        <CardTitle className="font-semibold">{title}</CardTitle>
+        <CardTitle className="font-semibold text-gray-300">{title}</CardTitle>
         <CardDescription className="font-extrabold text-7xl">
           {latestReading?.[property]}
           {functionalUnit ?? ""}
@@ -195,14 +200,17 @@ function Chart({
             <ChartTooltip
               cursor={false}
               content={
-                <ChartTooltipContent indicator="line" className="bg-white" />
+                <ChartTooltipContent
+                  indicator="line"
+                  className="bg-white text-black"
+                />
               }
             />
             <Line
               dataKey={property}
               type="linear"
-              stroke={color}
-              strokeWidth={2}
+              stroke="var(--color-white)"
+              strokeWidth={4}
               dot={false}
             />
           </LineChart>
