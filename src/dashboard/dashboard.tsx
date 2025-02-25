@@ -15,6 +15,7 @@ import { ClimateReading } from "@/models/sensor.model";
 import { Usage } from "@/models/usage.model";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
+import { Activity, Cpu, MemoryStick, Zap } from "lucide-react";
 import { Line, LineChart, YAxis } from "recharts";
 
 const chartConfig = {
@@ -86,14 +87,17 @@ export default function Dashboard() {
   return (
     <div className="grid min-h-screen grid-cols-1 gap-1 bg-gray-300 md:grid-cols-2 lg:grid-cols-3">
       <div className="flex items-center px-8 text-sm font-medium bg-white col-span-full">
-        CPU: {usage.cpu.temperature}°C | {usage.cpu.usage.toFixed(1)}%{" "}
-        <span className="px-4 font-medium">-</span>
-        Memory: {((usage.memory.used / usage.memory.total) * 100).toFixed(2)}%
-        used of {(usage.memory.total / 1024).toFixed(0)} MB
-        <span className="px-4 font-medium">-</span>
-        Uptime: {(usage.uptime / 1000 / 60).toFixed(0)} minutes
-        <span className="px-4 font-medium">-</span>
-        Voltage: {usage.voltage}V
+        <Cpu className="size-4 mr-1" /> {usage.cpu.usage.toFixed(1)}% at{" "}
+        {usage.cpu.temperature}°C
+        <div className="px-4 font-medium" />
+        <MemoryStick className="size-4 mr-1" />{" "}
+        {((usage.memory.used / usage.memory.total) * 100).toFixed(2)}% of{" "}
+        {(usage.memory.total / 1024).toFixed(0)} MB
+        <div className="px-4 font-medium" />
+        <Activity className="size-4 mr-1" />{" "}
+        {(usage.uptime / 1000 / 60).toFixed(0)} minutes
+        <div className="px-4 font-medium" />
+        <Zap className="size-4 mr-1" /> {usage.voltage}V
       </div>
       <Chart
         title="AQI"
