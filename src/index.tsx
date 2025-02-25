@@ -54,7 +54,7 @@ const server = serve({
       async GET() {
         const readings = db
           .prepare(
-            "SELECT * FROM climate_readings ORDER BY createdAt DESC LIMIT 200",
+            "SELECT * FROM climate_readings ORDER BY createdAt DESC LIMIT 240",
           )
           .all() as ClimateReading[];
         return new Response(JSON.stringify(readings.reverse()), {
