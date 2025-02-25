@@ -2,7 +2,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -15,7 +14,7 @@ import {
 import { ClimateReading } from "@/models/sensor.model";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
-import { Line, LineChart } from "recharts";
+import { Line, LineChart, YAxis } from "recharts";
 
 const chartConfig = {
   desktop: {
@@ -61,243 +60,117 @@ export default function Dashboard() {
     eco2: reading.eco2,
   }));
 
-  const latestReading = readings.at(-1);
+  return (
+    <div className="grid min-h-screen grid-cols-1 gap-px bg-gray-200 md:grid-cols-2 lg:grid-cols-3">
+      <Chart
+        title="AQI"
+        color="var(--color-purple-800)"
+        chartData={chartData}
+        property="aqi"
+      />
+      <Chart
+        title="Temperature"
+        color="var(--color-red-800)"
+        chartData={chartData}
+        property="temperature"
+        functionalUnit="°C"
+      />
+      <Chart
+        title="Humidity"
+        color="var(--color-blue-800)"
+        chartData={chartData}
+        property="humidity"
+        functionalUnit="%"
+      />
+      <Chart
+        title="Pressure"
+        color="var(--color-yellow-800)"
+        chartData={chartData}
+        property="pressure"
+        functionalUnit="Pa"
+      />
+      <Chart
+        title="TVOC"
+        color="var(--color-gray-800)"
+        chartData={chartData}
+        property="tvoc"
+        functionalUnit="ppb"
+      />
+      <Chart
+        title="eCO2"
+        color="var(--color-blue-800)"
+        chartData={chartData}
+        property="eco2"
+        functionalUnit="ppm"
+      />
+    </div>
+  );
+}
+
+function Chart({
+  title,
+  color,
+  chartData,
+  property,
+  functionalUnit,
+}: {
+  title: string;
+  color: string;
+  chartData: any[];
+  property: string;
+  functionalUnit?: string;
+}) {
+  const latestReading = chartData.at(-1);
+
+  const findMinAndMax = (
+    data: typeof chartData,
+    key: keyof (typeof chartData)[number],
+  ) => {
+    const values = data.map((d) => d[key]);
+    return [
+      Math.min(...(values as number[])),
+      Math.max(...(values as number[])),
+    ];
+  };
 
   return (
-    <div className="relative z-10 p-8 mx-auto max-w-7xl">
-      <h1 className="my-4 text-5xl font-bold leading-tight text-amber-950">
-        Dashboard
-      </h1>
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <Card>
-          <CardHeader className="gap-0">
-            <CardTitle className="font-semibold text-sm">Temperature</CardTitle>
-            <CardDescription className="text-2xl font-extrabold">
-              {latestReading?.temperature.toFixed(1)}°C
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ChartContainer config={chartConfig} className="h-[80px] w-full">
-              <LineChart
-                accessibilityLayer
-                data={chartData}
-                margin={{
-                  top: 20,
-                  left: 12,
-                  right: 12,
-                }}
-              >
-                <ChartTooltip
-                  cursor={false}
-                  content={
-                    <ChartTooltipContent
-                      indicator="line"
-                      className="bg-white"
-                    />
-                  }
-                />
-                <Line
-                  dataKey="temperature"
-                  type="natural"
-                  stroke="var(--color-red-800)"
-                  strokeWidth={2}
-                  dot={false}
-                />
-              </LineChart>
-            </ChartContainer>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="gap-0">
-            <CardTitle className="font-semibold text-sm">Humidity</CardTitle>
-            <CardDescription className="text-2xl font-extrabold">
-              {latestReading?.humidity.toFixed(1)}%
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ChartContainer config={chartConfig} className="h-[80px] w-full">
-              <LineChart
-                accessibilityLayer
-                data={chartData}
-                margin={{
-                  top: 20,
-                  left: 12,
-                  right: 12,
-                }}
-              >
-                <ChartTooltip
-                  cursor={false}
-                  content={
-                    <ChartTooltipContent
-                      indicator="line"
-                      className="bg-white"
-                    />
-                  }
-                />
-                <Line
-                  dataKey="humidity"
-                  type="natural"
-                  stroke="var(--color-blue-800)"
-                  strokeWidth={2}
-                  dot={false}
-                />
-              </LineChart>
-            </ChartContainer>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="gap-0">
-            <CardTitle className="font-semibold text-sm">Pressure</CardTitle>
-            <CardDescription className="text-2xl font-extrabold">
-              {latestReading?.pressure}Pa
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ChartContainer config={chartConfig} className="h-[80px] w-full">
-              <LineChart
-                accessibilityLayer
-                data={chartData}
-                margin={{
-                  top: 20,
-                  left: 12,
-                  right: 12,
-                }}
-              >
-                <ChartTooltip
-                  cursor={false}
-                  content={
-                    <ChartTooltipContent
-                      indicator="line"
-                      className="bg-white"
-                    />
-                  }
-                />
-                <Line
-                  dataKey="pressure"
-                  type="natural"
-                  stroke="var(--color-yellow-800)"
-                  strokeWidth={2}
-                  dot={false}
-                />
-              </LineChart>
-            </ChartContainer>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="gap-0">
-            <CardTitle className="font-semibold text-sm">TVOC</CardTitle>
-            <CardDescription className="text-2xl font-extrabold">
-              {latestReading?.tvoc}ppb
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ChartContainer config={chartConfig} className="h-[80px] w-full">
-              <LineChart
-                accessibilityLayer
-                data={chartData}
-                margin={{
-                  top: 20,
-                  left: 12,
-                  right: 12,
-                }}
-              >
-                <ChartTooltip
-                  cursor={false}
-                  content={
-                    <ChartTooltipContent
-                      indicator="line"
-                      className="bg-white"
-                    />
-                  }
-                />
-                <Line
-                  dataKey="tvoc"
-                  type="natural"
-                  stroke="var(--color-gray-800)"
-                  strokeWidth={2}
-                  dot={false}
-                />
-              </LineChart>
-            </ChartContainer>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="gap-0">
-            <CardTitle className="font-semibold text-sm">eCO2</CardTitle>
-            <CardDescription className="text-2xl font-extrabold">
-              {latestReading?.eco2}ppm
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ChartContainer config={chartConfig} className="h-[80px] w-full">
-              <LineChart
-                accessibilityLayer
-                data={chartData}
-                margin={{
-                  top: 20,
-                  left: 12,
-                  right: 12,
-                }}
-              >
-                <ChartTooltip
-                  cursor={false}
-                  content={
-                    <ChartTooltipContent
-                      indicator="line"
-                      className="bg-white"
-                    />
-                  }
-                />
-                <Line
-                  dataKey="eco2"
-                  type="natural"
-                  stroke="var(--color-green-800)"
-                  strokeWidth={2}
-                  dot={false}
-                />
-              </LineChart>
-            </ChartContainer>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="gap-0">
-            <CardTitle className="font-semibold text-sm">AQI</CardTitle>
-            <CardDescription className="text-2xl font-extrabold">
-              {latestReading?.aqi}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ChartContainer config={chartConfig} className="h-[80px] w-full">
-              <LineChart
-                accessibilityLayer
-                data={chartData}
-                margin={{
-                  top: 20,
-                  left: 12,
-                  right: 12,
-                }}
-              >
-                <ChartTooltip
-                  cursor={false}
-                  content={
-                    <ChartTooltipContent
-                      indicator="line"
-                      className="bg-white"
-                    />
-                  }
-                />
-                <Line
-                  dataKey="aqi"
-                  type="linear"
-                  stroke="var(--color-green-800)"
-                  strokeWidth={2}
-                  dot={false}
-                />
-              </LineChart>
-            </ChartContainer>
-          </CardContent>
-        </Card>
-      </div>
-    </div>
+    <Card className="h-full px-2 py-8 bg-white border-none rounded-none shadow-none">
+      <CardHeader className="gap-0">
+        <CardTitle className="font-semibold">{title}</CardTitle>
+        <CardDescription className="font-extrabold text-7xl">
+          {latestReading?.[property]}
+          {functionalUnit ?? ""}
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <ChartContainer config={chartConfig} className="w-full h-[25vh]">
+          <LineChart
+            accessibilityLayer
+            data={chartData}
+            margin={{
+              top: 5,
+              bottom: 5,
+              left: 5,
+              right: 5,
+            }}
+          >
+            <YAxis hide={true} domain={findMinAndMax(chartData, property)} />
+            <ChartTooltip
+              cursor={false}
+              content={
+                <ChartTooltipContent indicator="line" className="bg-white" />
+              }
+            />
+            <Line
+              dataKey={property}
+              type="linear"
+              stroke={color}
+              strokeWidth={2}
+              dot={false}
+            />
+          </LineChart>
+        </ChartContainer>
+      </CardContent>
+    </Card>
   );
 }
