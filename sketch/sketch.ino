@@ -44,15 +44,15 @@
 #include <DFRobot_ENS160.h>
 #include <DFRobot_BME280.h>
 
-constexpr float SEA_LEVEL_PRESSURE = 1024.5f;
+constexpr float SEA_LEVEL_PRESSURE = 1015.0f;
 
 DFRobot_ENS160_I2C ens160(&Wire, 0x53);
-DFRobot_BME280_IIC bme(&Wire, 0x76);
+DFRobot_BME280_IIC bme280(&Wire, 0x76);
 
 Servo servo;
 int servoPosition = 0;
 
-const int READ_INTERVAL = 1000 * 60; // 1 minute
+const int READ_INTERVAL = 1000 * 15; // 15 seconds
 
 void setup()
 {
@@ -68,10 +68,10 @@ void setup()
 
   // Initialize BME280 sensor
   Serial.println(F("Initializing BME280 sensor..."));
-  while (bme.begin() != DFRobot_BME280_IIC::eStatusOK)
+  while (bme280.begin() != DFRobot_BME280_IIC::eStatusOK)
   {
     Serial.println(F("BME280 init failed"));
-    printBMEStatus(bme.lastOperateStatus);
+    printBMEStatus(bme280.lastOperateStatus);
     delay(2000);
   }
   Serial.println(F("BME280 init success"));
@@ -86,8 +86,15 @@ void setup()
   }
   Serial.println(F("ENS160 init success"));
 
-  // Set ENS160 power mode to STANDARD for normal gas measurement
+  // Set ENS160 config
   ens160.setPWRMode(ENS160_STANDARD_MODE);
+
+  // Set BME280 config
+  bme280.setCtrlMeasMode(DFRobot_BME280::eCtrlMeasMode_normal);
+  bme280.setCtrlMeasSamplingPress(DFRobot_BME280::eSampling_X16);
+  bme280.setCtrlMeasSamplingTemp(DFRobot_BME280::eSampling_X2);
+  bme280.setCtrlHumiSampling(DFRobot_BME280::eSampling_X1);
+  bme280.setConfigFilter(DFRobot_BME280::eConfigFilter_X16);
 }
 
 void loop()
@@ -100,10 +107,10 @@ void loop()
   }
 
   // Read BME280
-  float temperatureC = bme.getTemperature();
-  uint32_t pressurePa = bme.getPressure();
-  float humidityPct = bme.getHumidity();
-  float altitudeM = bme.calAltitude(SEA_LEVEL_PRESSURE, pressurePa);
+  float temperatureC = bme280.getTemperature() - 5;
+  uint32_t pressurePa = bme280.getPressure();
+  float humidityPct = bme280.getHumidity();
+  float altitudeM = bme280.calAltitude(SEA_LEVEL_PRESSURE, pressurePa);
 
   // Read ENS160
   ens160.setTempAndHum(temperatureC, humidityPct);
@@ -265,7 +272,7 @@ void uploadSensorData(uint8_t ensStatus, float temperature, uint32_t pressure, f
  */
 void determineServoPositionFromAQI(uint8_t aqi)
 {
-  if (aqi >= 3)
+  if (aqi >= 4)
   {
     moveServo(180);
   }
