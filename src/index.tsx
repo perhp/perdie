@@ -64,7 +64,7 @@ const server = serve({
       async POST(req) {
         const body: ClimateReading = await req.json();
         db.prepare(
-          "INSERT INTO climate_readings (ensStatus, temperature, pressure, altitude, humidity, aqi, tvoc, eco2) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+          "INSERT INTO climate_readings (ensStatus, temperature, pressure, altitude, humidity, aqi, tvoc, eco2, createdAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
         ).run(
           body.ensStatus,
           body.temperature,
@@ -74,6 +74,7 @@ const server = serve({
           body.aqi,
           body.tvoc,
           body.eco2,
+          new Date().toISOString(),
         );
 
         db.prepare("DELETE FROM climate_readings WHERE createdAt < ?").run(
