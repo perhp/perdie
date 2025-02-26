@@ -208,7 +208,7 @@ function Chart({
             />
             <Line
               dataKey={property}
-              type="linear"
+              type="bump"
               stroke="var(--color-white)"
               strokeWidth={4}
               dot={false}
