@@ -102,44 +102,34 @@ export default function Dashboard() {
           <Github className="size-4" />
         </a>
       </div>
-      <div className="grid min-h-screen grid-cols-1 gap-0.5 bg-slate-900 md:grid-cols-2 lg:grid-cols-3">
-        <Chart
-          title="AQI"
-          color="var(--color-purple-800)"
-          chartData={chartData}
-          property="aqi"
-        />
+      <div className="grid min-h-[calc(100vh_-_2.5rem)] grid-cols-1 gap-0.5 bg-slate-900 md:grid-cols-2 lg:grid-cols-3 overflow-hidden">
+        <Chart title="AQI" chartData={chartData} property="aqi" />
         <Chart
           title="Temperature"
-          color="var(--color-red-800)"
           chartData={chartData}
           property="temperature"
           functionalUnit="°C"
         />
         <Chart
           title="Humidity"
-          color="var(--color-blue-800)"
           chartData={chartData}
           property="humidity"
           functionalUnit="%"
         />
         <Chart
           title="Pressure"
-          color="var(--color-yellow-800)"
           chartData={chartData}
           property="pressure"
           functionalUnit="hPa"
         />
         <Chart
           title="TVOC"
-          color="var(--color-gray-800)"
           chartData={chartData}
           property="tvoc"
           functionalUnit="ppb"
         />
         <Chart
           title="eCO2"
-          color="var(--color-blue-800)"
           chartData={chartData}
           property="eco2"
           functionalUnit="ppm"
@@ -151,13 +141,11 @@ export default function Dashboard() {
 
 function Chart({
   title,
-  color,
   chartData,
   property,
   functionalUnit,
 }: {
   title: string;
-  color: string;
   chartData: any[];
   property: string;
   functionalUnit?: string;
@@ -184,7 +172,7 @@ function Chart({
           <span className="font-bold text-4xl">{functionalUnit ?? ""}</span>
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="-mx-8">
         <ChartContainer config={chartConfig} className="w-full h-[25vh]">
           <LineChart
             accessibilityLayer
