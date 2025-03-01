@@ -172,7 +172,7 @@ function Chart({
           <span className="font-bold text-4xl">{functionalUnit ?? ""}</span>
         </CardDescription>
       </CardHeader>
-      <CardContent className="-mx-8">
+      <CardContent className="-mx-8 mt-6">
         <ChartContainer config={chartConfig} className="w-full h-[25vh]">
           <LineChart
             accessibilityLayer
