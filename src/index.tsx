@@ -20,14 +20,24 @@ const server = serve({
     "/api/usage": {
       async GET() {
         try {
+          const { data: cpuTemperature } = await getCPUTemperatureAsync();
+          const { data: cpuUsage } = await getCPUUsageAsync();
+          const { data: uptime } = await getUptimeAsync();
+          const { data: memory } = await getMemoryUsageAsync();
+          const { data: voltage } = await getVoltageAsync();
+
+          if (!cpuTemperature || !cpuUsage || !uptime || !memory || !voltage) {
+            throw Error();
+          }
+
           return Response.json({
             cpu: {
-              temperature: await getCPUTemperatureAsync(),
-              usage: await getCPUUsageAsync(),
+              temperature: cpuTemperature,
+              usage: cpuUsage,
             },
-            uptime: await getUptimeAsync(),
-            memory: await getMemoryUsageAsync(),
-            voltage: await getVoltageAsync(),
+            uptime,
+            memory,
+            voltage,
           } satisfies Usage);
         } catch (err) {
           return Response.json({
