@@ -86,7 +86,7 @@ const server = serve({
         );
 
         db.prepare("DELETE FROM climate_readings WHERE createdAt < ?").run(
-          new Date(Date.now() - 1000 * 60 * 60).toISOString(),
+          new Date(Date.now() - 1000 * 60 * 60 * 6).toISOString(),
         );
 
         console.log("Inserted new climate reading:", body);
