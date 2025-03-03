@@ -78,7 +78,7 @@ export default function Dashboard() {
     createdAt: format(new Date(reading.createdAt), "HH:mm"),
     temperature: +reading.temperature.toFixed(1),
     humidity: +reading.humidity.toFixed(1),
-    pressure: +(reading.pressure / 100).toFixed(0),
+    pressure: +reading.pressure.toFixed(0),
     aqi: reading.aqi,
     tvoc: reading.tvoc,
     eco2: reading.eco2,
@@ -120,7 +120,7 @@ export default function Dashboard() {
           title="Pressure"
           chartData={chartData}
           property="pressure"
-          functionalUnit="hPa"
+          functionalUnit="Pa"
         />
         <Chart
           title="TVOC"
