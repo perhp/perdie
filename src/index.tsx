@@ -20,14 +20,24 @@ const server = serve({
     "/api/usage": {
       async GET() {
         try {
+          const { data: cpuTemperature } = await getCPUTemperatureAsync();
+          const { data: cpuUsage } = await getCPUUsageAsync();
+          const { data: uptime } = await getUptimeAsync();
+          const { data: memory } = await getMemoryUsageAsync();
+          const { data: voltage } = await getVoltageAsync();
+
+          if (!cpuTemperature || !cpuUsage || !uptime || !memory || !voltage) {
+            throw Error();
+          }
+
           return Response.json({
             cpu: {
-              temperature: await getCPUTemperatureAsync(),
-              usage: await getCPUUsageAsync(),
+              temperature: cpuTemperature,
+              usage: cpuUsage,
             },
-            uptime: await getUptimeAsync(),
-            memory: await getMemoryUsageAsync(),
-            voltage: await getVoltageAsync(),
+            uptime,
+            memory,
+            voltage,
           } satisfies Usage);
         } catch (err) {
           return Response.json({
@@ -53,9 +63,7 @@ const server = serve({
     "/api/climate-readings": {
       async GET() {
         const readings = db
-          .prepare(
-            "SELECT * FROM climate_readings ORDER BY createdAt DESC LIMIT 240",
-          )
+          .prepare("SELECT * FROM climate_readings ORDER BY createdAt DESC")
           .all() as ClimateReading[];
         return new Response(JSON.stringify(readings.reverse()), {
           headers: { "content-type": "application/json" },
@@ -78,7 +86,7 @@ const server = serve({
         );
 
         db.prepare("DELETE FROM climate_readings WHERE createdAt < ?").run(
-          new Date(Date.now() - 1000 * 60 * 60).toISOString(),
+          new Date(Date.now() - 1000 * 60 * 60 * 6).toISOString(),
         );
 
         console.log("Inserted new climate reading:", body);
