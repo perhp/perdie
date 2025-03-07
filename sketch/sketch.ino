@@ -63,7 +63,7 @@ void setup()
   connectWiFi();
 
   // Initialize servo
-  servo.attach(13, 300, 2460);
+  servo.attach(13, 544, 2460);
   moveServo(0);
 
   // Initialize BME280 sensor
