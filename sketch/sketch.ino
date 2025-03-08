@@ -52,6 +52,8 @@ DFRobot_BME280_IIC bme280(&Wire, 0x76);
 Servo servo;
 int servoPosition = 0;
 
+int badClimateCount = 0;
+
 const int READ_INTERVAL = 1000 * 15; // 15 seconds
 
 void setup()
@@ -274,10 +276,15 @@ void determineServoPosition(uint16_t eco2)
 {
   if (eco2 >= 1000)
   {
-    moveServo(180);
+    badClimateCount++;
+    if (badClimateCount >= 12) // 3 minutes
+    {
+      moveServo(180);
+    }
   }
   else if (eco2 <= 800)
   {
+    badClimateCount = 0;
     moveServo(0);
   }
 }
