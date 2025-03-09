@@ -149,7 +149,7 @@ void loop()
 
   determineServoPosition(eco2);
   uploadSensorData(ensStatus, temperatureC, pressurePa, altitudeM, humidityPct, aqi, tvoc, eco2);
-  delay(5000);
+  delay(READ_INTERVAL);
 }
 
 /**
