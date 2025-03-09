@@ -26,18 +26,21 @@ const server = serve({
           const { data: memory } = await getMemoryUsageAsync();
           const { data: voltage } = await getVoltageAsync();
 
-          if (!cpuTemperature || !cpuUsage || !uptime || !memory || !voltage) {
-            throw Error();
-          }
-
           return Response.json({
             cpu: {
-              temperature: cpuTemperature,
-              usage: cpuUsage,
+              temperature: cpuTemperature ?? 0,
+              usage: cpuUsage ?? 0,
             },
-            uptime,
-            memory,
-            voltage,
+            uptime: uptime ?? 0,
+            memory: memory ?? {
+              total: 0,
+              used: 0,
+              free: 0,
+              shared: 0,
+              buffCache: 0,
+              available: 0,
+            },
+            voltage: voltage ?? 0,
           } satisfies Usage);
         } catch (err) {
           return Response.json({
