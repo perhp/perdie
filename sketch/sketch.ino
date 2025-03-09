@@ -44,6 +44,10 @@
 #include <DFRobot_ENS160.h>
 #include <DFRobot_BME280.h>
 
+#define SERVO_PIN 13
+#define SERVO_MIN 450
+#define SERVO_MAX 2500
+
 constexpr float SEA_LEVEL_PRESSURE = 1015.0f;
 
 DFRobot_ENS160_I2C ens160(&Wire, 0x53);
@@ -59,13 +63,12 @@ const int READ_INTERVAL = 1000 * 15; // 15 seconds
 void setup()
 {
   Serial.begin(115200);
-  delay(500);
+  delay(1000);
 
   // Connect to WiFi
   connectWiFi();
 
   // Initialize servo
-  servo.attach(13, 544, 2460);
   moveServo(0);
 
   // Initialize BME280 sensor
@@ -146,7 +149,7 @@ void loop()
 
   determineServoPosition(eco2);
   uploadSensorData(ensStatus, temperatureC, pressurePa, altitudeM, humidityPct, aqi, tvoc, eco2);
-  delay(READ_INTERVAL);
+  delay(5000);
 }
 
 /**
@@ -156,12 +159,13 @@ void connectWiFi()
 {
   WiFi.mode(WIFI_STA);
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-  Serial.println(F("Connecting to WiFi."));
+  Serial.print(F("Connecting to WiFi."));
   while (WiFi.status() != WL_CONNECTED)
   {
     Serial.print(F("."));
     delay(1000);
   }
+  Serial.println("");
   Serial.print(F("Connected! IP address: "));
   Serial.println(WiFi.localIP());
 }
@@ -198,7 +202,10 @@ void printBMEStatus(DFRobot_BME280_IIC::eStatus_t eStatus)
  */
 void moveServo(int targetPosition)
 {
-  const int delayTime = 20;
+  servo.attach(SERVO_PIN, SERVO_MIN, SERVO_MAX);
+  delay(500);
+
+  const int delayTime = 15;
   int startPos = servoPosition;
   if (startPos < targetPosition)
   {
@@ -217,6 +224,9 @@ void moveServo(int targetPosition)
     }
   }
   servoPosition = targetPosition;
+
+  delay(500);
+  servo.detach();
 }
 
 /**
