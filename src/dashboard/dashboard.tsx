@@ -86,18 +86,22 @@ export default function Dashboard() {
 
   return (
     <>
-      <div className="flex items-center px-8 text-sm font-medium bg-slate-900 text-gray-100 col-span-full h-10">
-        <Cpu className="size-4 mr-1" /> {usage.cpu.usage.toFixed(1)}% at{" "}
-        {usage.cpu.temperature}°C
+      <div className="flex items-center h-10 px-8 text-sm font-medium text-gray-100 bg-slate-900 col-span-full">
+        <Cpu className="mr-1 size-4" /> {usage.cpu.usage.toFixed(1)}%
+        {usage.cpu.temperature > 0 && <> at {usage.cpu.temperature}°C</>}
         <div className="px-4 font-medium" />
-        <MemoryStick className="size-4 mr-1" />{" "}
+        <MemoryStick className="mr-1 size-4" />{" "}
         {((usage.memory.used / usage.memory.total) * 100).toFixed(2)}% of{" "}
         {(usage.memory.total / 1024).toFixed(0)} MB
         <div className="px-4 font-medium" />
-        <Activity className="size-4 mr-1" />{" "}
+        <Activity className="mr-1 size-4" />{" "}
         {(usage.uptime / 1000 / 60).toFixed(0)} minutes
-        <div className="px-4 font-medium" />
-        <Zap className="size-4 mr-1" /> {usage.voltage}V
+        {usage.voltage > 0 && (
+          <>
+            <div className="px-4 font-medium" />
+            <Zap className="mr-1 size-4" /> {usage.voltage}V
+          </>
+        )}
         <a href="https://github.com/perhp" target="_blank" className="ml-auto">
           <Github className="size-4" />
         </a>
@@ -164,15 +168,15 @@ function Chart({
   };
 
   return (
-    <Card className="h-full px-2 py-8 bg-slate-800 border-none rounded-none shadow-none text-white">
+    <Card className="h-full px-2 py-8 text-white border-none rounded-none shadow-none bg-slate-800">
       <CardHeader className="gap-0">
         <CardTitle className="font-semibold text-gray-300">{title}</CardTitle>
         <CardDescription className="font-extrabold text-7xl">
           {latestReading?.[property]}
-          <span className="font-bold text-4xl">{functionalUnit ?? ""}</span>
+          <span className="text-4xl font-bold">{functionalUnit ?? ""}</span>
         </CardDescription>
       </CardHeader>
-      <CardContent className="-mx-8 mt-6">
+      <CardContent className="mt-6 -mx-8">
         <ChartContainer config={chartConfig} className="w-full h-[25vh]">
           <LineChart
             accessibilityLayer
@@ -190,7 +194,7 @@ function Chart({
               content={
                 <ChartTooltipContent
                   indicator="line"
-                  className="bg-white text-black"
+                  className="text-black bg-white"
                 />
               }
             />
