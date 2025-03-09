@@ -19,47 +19,28 @@ const server = serve({
     // API endpoints
     "/api/usage": {
       async GET() {
-        try {
-          const { data: cpuTemperature } = await getCPUTemperatureAsync();
-          const { data: cpuUsage } = await getCPUUsageAsync();
-          const { data: uptime } = await getUptimeAsync();
-          const { data: memory } = await getMemoryUsageAsync();
-          const { data: voltage } = await getVoltageAsync();
+        const { data: cpuTemperature } = await getCPUTemperatureAsync();
+        const { data: cpuUsage } = await getCPUUsageAsync();
+        const { data: uptime } = await getUptimeAsync();
+        const { data: memory } = await getMemoryUsageAsync();
+        const { data: voltage } = await getVoltageAsync();
 
-          return Response.json({
-            cpu: {
-              temperature: cpuTemperature ?? 0,
-              usage: cpuUsage ?? 0,
-            },
-            uptime: uptime ?? 0,
-            memory: memory ?? {
-              total: 0,
-              used: 0,
-              free: 0,
-              shared: 0,
-              buffCache: 0,
-              available: 0,
-            },
-            voltage: voltage ?? 0,
-          } satisfies Usage);
-        } catch (err) {
-          return Response.json({
-            cpu: {
-              temperature: 38.4,
-              usage: 51.23,
-            },
-            uptime: 30009360,
-            memory: {
-              total: 4148112,
-              used: 850048,
-              free: 2148672,
-              shared: 89984,
-              buffCache: 1312752,
-              available: 3298064,
-            },
-            voltage: 0.72,
-          } satisfies Usage);
-        }
+        return Response.json({
+          cpu: {
+            temperature: cpuTemperature ?? 0,
+            usage: cpuUsage ?? 0,
+          },
+          uptime: uptime ?? 0,
+          memory: memory ?? {
+            total: 0,
+            used: 0,
+            free: 0,
+            shared: 0,
+            buffCache: 0,
+            available: 0,
+          },
+          voltage: voltage ?? 0,
+        } satisfies Usage);
       },
     },
 
