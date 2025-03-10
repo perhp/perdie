@@ -41,11 +41,11 @@ function useClimateReadings() {
   });
 }
 
-function useUsage() {
+function useUsages() {
   return useQuery({
-    queryKey: ["usage"],
-    queryFn: async (): Promise<Usage> => {
-      const response = await fetch("/api/usage");
+    queryKey: ["usages"],
+    queryFn: async (): Promise<Usage[]> => {
+      const response = await fetch("/api/usages");
       return await response.json();
     },
     refetchInterval: 10000,
@@ -61,16 +61,16 @@ export default function Dashboard() {
   } = useClimateReadings();
 
   const {
-    data: usage,
+    data: usages,
     isLoading: usageIsLoading,
     isError: usageIsError,
-  } = useUsage();
+  } = useUsages();
 
   if (climateReadingsIsLoading || usageIsLoading) {
     return <div>Loading..</div>;
   }
 
-  if (climateReadingsIsError || usageIsError || !readings || !usage) {
+  if (climateReadingsIsError || usageIsError || !readings || !usages) {
     return <div>Error</div>;
   }
 
@@ -84,22 +84,28 @@ export default function Dashboard() {
     eco2: reading.eco2,
   }));
 
+  const currentUsage = usages.at(-1)!;
+
   return (
     <>
       <div className="flex items-center h-10 px-8 text-sm font-medium text-gray-100 bg-slate-900 col-span-full">
-        <Cpu className="mr-1 size-4" /> {usage.cpu.usage.toFixed(1)}%
-        {usage.cpu.temperature > 0 && <> at {usage.cpu.temperature}°C</>}
+        <Cpu className="mr-1 size-4" /> {currentUsage.cpu_usage.toFixed(1)}%
+        {currentUsage.cpu_temperature > 0 && (
+          <> at {currentUsage.cpu_temperature}°C</>
+        )}
         <div className="px-4 font-medium" />
         <MemoryStick className="mr-1 size-4" />{" "}
-        {((usage.memory.used / usage.memory.total) * 100).toFixed(2)}% of{" "}
-        {(usage.memory.total / 1024).toFixed(0)} MB
+        {(
+          (currentUsage.memory_used / currentUsage.memory_total || 0) * 100
+        ).toFixed(2)}
+        % of {(currentUsage.memory_total / 1024).toFixed(0)} MB
         <div className="px-4 font-medium" />
         <Activity className="mr-1 size-4" />{" "}
-        {(usage.uptime / 1000 / 60).toFixed(0)} minutes
-        {usage.voltage > 0 && (
+        {(currentUsage.uptime / 1000 / 60).toFixed(0)} minutes
+        {currentUsage.voltage > 0 && (
           <>
             <div className="px-4 font-medium" />
-            <Zap className="mr-1 size-4" /> {usage.voltage}V
+            <Zap className="mr-1 size-4" /> {currentUsage.voltage}V
           </>
         )}
         <a href="https://github.com/perhp" target="_blank" className="ml-auto">
