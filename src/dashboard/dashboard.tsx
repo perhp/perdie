@@ -21,6 +21,8 @@ import {
   Github,
   LoaderPinwheel,
   MemoryStick,
+  TrendingDown,
+  TrendingUp,
   Zap,
 } from "lucide-react";
 import { Line, LineChart, YAxis } from "recharts";
@@ -175,6 +177,10 @@ function Chart({
   functionalUnit?: string;
 }) {
   const latestReading = chartData.at(-1);
+  const latestReadings = chartData.slice(-10);
+  const average =
+    latestReadings.reduce((acc, reading) => acc + reading[property], 0) /
+    latestReadings.length;
 
   const findMinAndMax = (
     data: typeof chartData,
@@ -194,6 +200,12 @@ function Chart({
         <CardDescription className="font-extrabold text-7xl">
           {latestReading?.[property]}
           <span className="text-4xl font-bold">{functionalUnit ?? ""}</span>
+          {latestReading?.[property] < average && (
+            <TrendingDown className="inline-block size-6" />
+          )}
+          {latestReading?.[property] >= average && (
+            <TrendingUp className="inline-block size-6" />
+          )}
         </CardDescription>
       </CardHeader>
       <CardContent className="mt-6 -mx-8">
