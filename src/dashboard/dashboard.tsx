@@ -196,16 +196,18 @@ function Chart({
   return (
     <Card className="h-full px-2 py-8 text-white border-none rounded-none shadow-none bg-slate-800">
       <CardHeader className="gap-0">
-        <CardTitle className="font-semibold text-gray-300">{title}</CardTitle>
+        <CardTitle className="font-semibold text-gray-300">
+          {title}{" "}
+          {latestReading?.[property] < average && (
+            <TrendingDown className="inline-block ml-2 size-4" />
+          )}
+          {latestReading?.[property] >= average && (
+            <TrendingUp className="inline-block ml-2 size-4" />
+          )}
+        </CardTitle>
         <CardDescription className="font-extrabold text-7xl">
           {latestReading?.[property]}
           <span className="text-4xl font-bold">{functionalUnit ?? ""}</span>
-          {latestReading?.[property] < average && (
-            <TrendingDown className="inline-block size-6" />
-          )}
-          {latestReading?.[property] >= average && (
-            <TrendingUp className="inline-block size-6" />
-          )}
         </CardDescription>
       </CardHeader>
       <CardContent className="mt-6 -mx-8">
