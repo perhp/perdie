@@ -103,9 +103,10 @@ export default function Dashboard() {
   const currentUsage = usages.at(-1)!;
 
   const convertUptime = (uptime: number) => {
-    const days = Math.floor(uptime / 86400);
-    const hours = Math.floor((uptime % 86400) / 3600);
-    const minutes = Math.floor((uptime % 3600) / 60);
+    const uptimeInSeconds = uptime / 1000;
+    const days = Math.floor(uptimeInSeconds / 86400);
+    const hours = Math.floor((uptimeInSeconds % 86400) / 3600);
+    const minutes = Math.floor((uptimeInSeconds % 3600) / 60);
     const parts: string[] = [];
     if (days > 0) {
       parts.push(`${days}d`);
