@@ -102,6 +102,23 @@ export default function Dashboard() {
 
   const currentUsage = usages.at(-1)!;
 
+  const convertUptime = (uptime: number) => {
+    const days = Math.floor(uptime / 86400);
+    const hours = Math.floor((uptime % 86400) / 3600);
+    const minutes = Math.floor((uptime % 3600) / 60);
+    const parts: string[] = [];
+    if (days > 0) {
+      parts.push(`${days}d`);
+    }
+    if (hours > 0) {
+      parts.push(`${hours}h`);
+    }
+    if (minutes > 0) {
+      parts.push(`${minutes}m`);
+    }
+    return parts.join(" ");
+  };
+
   return (
     <>
       <div className="flex items-center h-10 px-8 text-sm font-medium text-gray-100 bg-slate-900 col-span-full">
@@ -117,7 +134,7 @@ export default function Dashboard() {
         % of {(currentUsage.memory_total / 1024).toFixed(0)} MB
         <div className="px-4 font-medium" />
         <Activity className="mr-1 size-4" />{" "}
-        {(currentUsage.uptime / 1000 / 60).toFixed(0)} minutes
+        {convertUptime(currentUsage.uptime)}
         {currentUsage.voltage > 0 && (
           <>
             <div className="px-4 font-medium" />
@@ -199,10 +216,10 @@ function Chart({
         <CardTitle className="font-semibold text-gray-300">
           {title}{" "}
           {latestReading?.[property] < average && (
-            <TrendingDown className="inline-block ml-2 size-4" />
+            <TrendingDown className="inline-block ml-1 size-4" />
           )}
           {latestReading?.[property] >= average && (
-            <TrendingUp className="inline-block ml-2 size-4" />
+            <TrendingUp className="inline-block ml-1 size-4" />
           )}
         </CardTitle>
         <CardDescription className="font-extrabold text-7xl">
