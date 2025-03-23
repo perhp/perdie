@@ -16,7 +16,7 @@ import { Usage } from "@/models/usage.model";
 import { useQuery } from "@tanstack/react-query";
 import { format } from "date-fns";
 import {
-  Activity,
+  ClockArrowUp,
   Cpu,
   Github,
   LoaderPinwheel,
@@ -134,7 +134,7 @@ export default function Dashboard() {
         ).toFixed(2)}
         % of {(currentUsage.memory_total / 1024).toFixed(0)} MB
         <div className="px-4 font-medium" />
-        <Activity className="mr-1 size-4" />{" "}
+        <ClockArrowUp className="mr-1 size-4" />{" "}
         {convertUptime(currentUsage.uptime)}
         {currentUsage.voltage > 0 && (
           <>
