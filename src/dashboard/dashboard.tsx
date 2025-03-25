@@ -91,7 +91,7 @@ export default function Dashboard() {
   }
 
   const chartData = readings.map((reading) => ({
-    createdAt: format(new Date(reading.createdAt), "HH:mm"),
+    createdAt: format(new Date(reading.createdAt), "HH:mm:ss"),
     temperature: +reading.temperature.toFixed(1),
     humidity: +reading.humidity.toFixed(1),
     pressure: +reading.pressure.toFixed(0),
@@ -246,6 +246,17 @@ function Chart({
               content={
                 <ChartTooltipContent
                   indicator="line"
+                  formatter={(value, _, { payload }) => (
+                    <div className="flex flex-col">
+                      <span className="text-xs font-semibold text-gray-500">
+                        {payload.createdAt}
+                      </span>
+                      <span className="text-xl font-extrabold leading-4">
+                        {value}
+                        {functionalUnit ?? ""}
+                      </span>
+                    </div>
+                  )}
                   className="text-black bg-white"
                 />
               }
