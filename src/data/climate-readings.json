@@ -1,0 +1,62 @@
+[
+  {
+    "id": 12502,
+    "ensStatus": 0,
+    "temperature": 23.5,
+    "pressure": 100781,
+    "altitude": 66.70370483398438,
+    "humidity": 31.4931640625,
+    "aqi": 4,
+    "tvoc": 1074,
+    "eco2": 1020,
+    "createdAt": "2025-03-25T18:19:41.031Z"
+  },
+  {
+    "id": 12503,
+    "ensStatus": 0,
+    "temperature": 23.489999771118164,
+    "pressure": 100780,
+    "altitude": 66.70370483398438,
+    "humidity": 31.537109375,
+    "aqi": 4,
+    "tvoc": 1142,
+    "eco2": 1036,
+    "createdAt": "2025-03-25T18:19:56.390Z"
+  },
+  {
+    "id": 12504,
+    "ensStatus": 0,
+    "temperature": 23.489999771118164,
+    "pressure": 100781,
+    "altitude": 66.70370483398438,
+    "humidity": 31.5712890625,
+    "aqi": 4,
+    "tvoc": 1073,
+    "eco2": 1019,
+    "createdAt": "2025-03-25T18:20:11.448Z"
+  },
+  {
+    "id": 12505,
+    "ensStatus": 0,
+    "temperature": 23.5,
+    "pressure": 100780,
+    "altitude": 66.70370483398438,
+    "humidity": 31.515625,
+    "aqi": 4,
+    "tvoc": 1106,
+    "eco2": 1027,
+    "createdAt": "2025-03-25T18:20:26.805Z"
+  },
+  {
+    "id": 12506,
+    "ensStatus": 0,
+    "temperature": 23.489999771118164,
+    "pressure": 100778,
+    "altitude": 66.70370483398438,
+    "humidity": 31.5712890625,
+    "aqi": 4,
+    "tvoc": 1076,
+    "eco2": 1020,
+    "createdAt": "2025-03-25T18:20:42.266Z"
+  }
+]
