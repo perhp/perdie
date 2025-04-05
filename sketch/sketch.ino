@@ -292,7 +292,7 @@ void determineServoPosition(uint16_t eco2)
   if (eco2 >= 1000)
   {
     badClimateCount++;
-    if (badClimateCount >= 12) // 3 minutes
+    if (badClimateCount >= 20) // 5 minutes
     {
       moveServo(180);
     }
