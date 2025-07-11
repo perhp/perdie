@@ -266,6 +266,7 @@ function Chart({
               stroke="var(--color-white)"
               strokeWidth={4}
               dot={false}
+              animateNewValues={false}
             />
           </LineChart>
         </ChartContainer>
