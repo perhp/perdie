@@ -1,8 +1,9 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Route, Routes } from "react-router";
-import Dashboard from "./dashboard/dashboard";
-import "./index.css";
+import Dashboard from "./routes/dashboard/dashboard";
+
+import "./global.css";
 
 const queryClient = new QueryClient();
 

@@ -4,13 +4,13 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
+} from "@/client/components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart";
+} from "@/client/components/ui/chart";
 import { ClimateReading } from "@/models/sensor.model";
 import { Usage } from "@/models/usage.model";
 import { useQuery } from "@tanstack/react-query";
