@@ -175,3 +175,6 @@ dist
 .DS_Store
 
 sketch/secrets.h
+
+# Bun SQLite database file
+db.sqlite
